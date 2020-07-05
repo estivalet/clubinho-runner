@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Clubinho Runner</title>
+<meta name="description" content="Push Box">
+<meta name="author" content="LFEstivalet">
+<style>
+html, body {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    color:black;
+    background-color: gray;
+}
+
+#button-choose-stage, #button-start, #button-restart {
+  font-family: 'Luckiest Guy', cursive;
+  padding: 1rem 1.25rem;
+  font-size: 1.5rem;
+  letter-spacing: .25rem;
+  box-shadow: 2px 2px 0px 1px #4a4c69;
+  text-transform: uppercase;
+  background-color: #8386b5;
+  border: none;
+  border-radius: .75rem;
+  color: #fff;
+
+  margin-left: auto; 
+  margin-right: auto; 
+  top: 80%;
+  display: block;
+  position:relative;
+}
+
+#button-next-player, #button-previous-player, #button-next-stage, #button-previous-stage {
+  font-family: 'Luckiest Guy', cursive;
+  padding: 1rem 1.25rem;
+  font-size: 1.5rem;
+  letter-spacing: .25rem;
+  box-shadow: 2px 2px 0px 1px #4a4c69;
+  text-transform: uppercase;
+  background-color: #8386b5;
+  border: none;
+  border-radius: .75rem;
+  color: #fff;
+  outline: none;
+
+  position:relative;
+}
+
+#button-previous-player, #button-previous-stage {
+    left:0px;
+    top: 150px;
+}
+
+#button-next-player, #button-next-stage {
+    left:530px;
+    top: 150px;
+}
+
+#button-start:hover, #button-restart:hover, #button-next-player:hover, #button-previous-player:hover {
+  background-color: #ffc0c1;
+  box-shadow: 2px 2px 0px 1px #b58a8a;
+}
+
+
+</style>
+
+<script src='common.js'></script>
+<script src='animation.js'></script>
+<script src='player.js'></script>
+<script src='enemy.js'></script>
+<script src='npc.js'></script>
+<script src='scene.js'></script>
+<script src='score.js'></script>
+<script src='life.js'></script>
+<script src='health.js'></script>
+<script src='config.js'></script>
+<script src='intro_screen.js'></script>
+<script src='stage_screen.js'></script>
+<script src='game_screen.js'></script>
+<script src='game_over_screen.js'></script>
+</head>
+
+<body>
+
+
+
+<audio id="player"></audio>
+
+<div id="container" class="canvas-container"  style="width:800px; height:480px;position: relative;margin-left: auto; margin-right: auto; display: block; border:1px solid black">    
+    <canvas id="canvas" width="800" height="480"  style="position:absolute;z-index:0;background-color:black;">
+        Your browser does not support the HTML5 canvas tag.
+    </canvas>    
+</div>
+
+<!--canvas id="tmpCanvas" width="400" height="400" style="margin-left: auto; margin-right: auto; display: block; border:10px solid red"></canvas-->
+
+<script>
+"use strict";
+
+let canvas;
+let context;
+let fps;
+let secondsPassed = 0;
+let oldTimeStamp = 0;
+
+let left = false;
+let right = false;
+let up = false;
+let down = false;
+let keySpace = false;
+
+let images = {};
+let audios = {};
+
+let cenarios;
+
+
+
+let currentStage = "stage1";
+let currentLevel = "level1";
+
+
+let enemys = [];
+let npcs = [];
+
+let background = "forest1";
+let hero="jack";
+
+let player;
+let score;
+let life;
+let health;
+let gameScreen = new GameScreen();
+let introScreen = new IntroScreen();
+let stageScreen = new StageScreen();
+let gameOverScreen = new GameOverScreen();
+let currentScreen = introScreen;
+
+const SPEED = 20;
+
+window.onload = init;
+
+function ImageLoader(imagesToLoad) {
+    return new Promise((resolve, reject) => {
+        var images = {};
+        var loadedImages = 0;
+        var numImages = 0;
+        for (var src in imagesToLoad) {
+            numImages++;
+        }
+
+        var width = 1;
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctx.fillStyle = "#FF0000";
+        ctx.font = "60px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("Loading...", CANVAS_WIDTH/2, CANVAS_HEIGHT/2-100);
+
+        for (var src in imagesToLoad) {
+            images[src] = new Image();
+            images[src].onload = function() {
+
+               // console.log('promise loaded ' + loadedImages + ' of ' + numImages);
+            width = width + canvas.width/numImages;
+            ctx.fillRect(0, CANVAS_HEIGHT/2-50, width, 50);
+
+                if (++loadedImages >= numImages) {
+                   // console.log('promise loaded ' + loadedImages + ' of ' + numImages);
+                    resolve(images);
+                }
+            };
+            images[src].src = imagesToLoad[src];
+        }
+    });
+}
+
+function AudioLoader(audiosToLoad) {
+    return new Promise((resolve, reject) => {
+        var soundsLoaded = {};
+        var loadedSounds = 0;
+        var numSounds = 0;
+        for (var src in audiosToLoad) {
+            numSounds++;
+        }
+        
+        var width = 1;
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#FFFF00";
+        ctx.font = "60px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("Loading...", CANVAS_WIDTH/2, CANVAS_HEIGHT/2-100);
+        
+        
+
+        for (var src in audiosToLoad) {
+            soundsLoaded[src] = new Audio();
+            soundsLoaded[src].oncanplaythrough = function() {
+
+                //console.log('promise sound loaded ' + loadedSounds + ' of ' + numSounds);
+            ctx.fillRect(0, CANVAS_HEIGHT/2-50, width, 50);
+           // console.log('promise sound loaded ' + loadedSounds + ' of ' + numSounds);
+
+                if (++loadedSounds >= numSounds) {
+                    resolve(soundsLoaded);
+                }
+            };
+            soundsLoaded[src].src = audiosToLoad[src];
+        }
+    });
+}
+
+
+function loadStage(background) {
+    enemys = {};
+    npcs = [];
+
+    let sources = {};
+    for (let layer in config.assets.backgrounds[background]) {
+        sources[layer] = config.assets.backgrounds[background][layer].image;
+    }
+    
+    
+    let p1 = ImageLoader(sources);
+    Promise.all([p1])
+        .then((data) => {
+        for (var attrname in data[0]) { images[attrname] = data[0][attrname]; }
+            
+            cenarios = [];
+            for(let i=0; i < Object.keys(config.assets.backgrounds[background]).length; i++) {
+                let keys = Object.keys(config.assets.backgrounds[background]);
+                cenarios.push(new Scene(images[keys[i]],config.assets.backgrounds[background][keys[i]].speed*SPEED, CANVAS_WIDTH, CANVAS_HEIGHT));
+            }
+            
+            
+            for (let sprite in config.assets.sprites) {
+                let s = config.assets.sprites[sprite];
+                if(s.type === "enemy") {
+                    let enemy = new Enemy(images[sprite], s.name, s.x, s.y, s.width, s.height, s.spriteWidth, s.spriteHeight, s.speed, s.frames, s.collisionRectAdj)
+                    enemy.frameSet = s.frames.left;
+                    enemys[s.name] = enemy;
+                    
+                } else if(s.type === "player" && s.name === hero) {
+                    player = new Player(images[sprite], s.x, s.y, s.width, s.height, s.spriteWidth, s.spriteHeight, 20, s.frames, s.collisionRectAdj);
+                    player.frameSet = s.frames.right;
+                } else if(s.type === "npc") {
+                    let npc1 = new Npc(images.bee, CANVAS_WIDTH - 401, -100, 28, 25.33, 28, 25.33, s.speed, s.frames);
+                    npc1.frameSet = s.frames.left;
+                    let npc2 = new Npc(images.bee, CANVAS_WIDTH - 208, -200, 28, 25.33, 28, 25.33, s.speed, s.frames);
+                    npc2.frameSet = s.frames.left;
+                    let npc3 = new Npc(images.bee, CANVAS_WIDTH - 108, -350, 28, 25.33, 28, 25.33, s.speed, s.frames);
+                    npc3.frameSet = s.frames.left;
+                    let npc4 = new Npc(images.bee, CANVAS_WIDTH - 302, -100, 28, 25.33, 28, 25.33, s.speed, s.frames);    
+                    npc4.frameSet = s.frames.left;
+                    npcs.push(npc1, npc2, npc3, npc4);
+                }
+            }
+            score = new Score();
+            life = new Life(images.heart, 5, 1);
+            health = new Health();
+        
+
+            currentScreen = gameScreen;
+            currentScreen.init();
+
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    
+}
+
+
+function init(){
+    var sounds = {};
+    for (let sound in config.assets.sounds) {
+        sounds[sound] = config.assets.sounds[sound];
+    }
+
+    var sources = {};
+    for (let sprite in config.assets.sprites) {
+        sources[sprite] = config.assets.sprites[sprite].image;
+    }
+    for (let image in config.assets.images) {
+        sources[image] = config.assets.images[image].image;
+    }
+    
+
+    let p1 = ImageLoader(sources);
+    let p2 = AudioLoader(sounds);
+    Promise.all([p1, p2])
+        .then((data) => {
+            images = data[0];
+            audios = data[1];
+            
+
+
+            
+        
+            introScreen.init();
+        
+            window.addEventListener("keydown", keyDown, false);
+            window.addEventListener("keyup", keyUp, false);
+            window.addEventListener("mousedown", mouseDown, false);
+            window.addEventListener("mouseup", mouseUp, false);
+            canvas = document.getElementById('canvas');
+            context = canvas.getContext('2d');
+            window.requestAnimationFrame(gameLoop);  
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+ }
+
+
+
+function gameLoop(timeStamp) {
+
+    // Calculate the number of seconds passed since the last frame
+    secondsPassed = (timeStamp - oldTimeStamp) / 1000;
+    // Move forward in time with a maximum amount
+    secondsPassed = Math.min(secondsPassed, 0.1);
+    oldTimeStamp = timeStamp;
+
+    // Calculate fps
+    fps = Math.round(1 / secondsPassed);
+
+
+    // Pass the time to the update
+    currentScreen.update(secondsPassed);
+    // Perform the drawing operation
+    currentScreen.draw(fps, secondsPassed);
+
+    // The loop function has reached it's end. Keep requesting new frames
+    window.requestAnimationFrame(gameLoop);
+}
+
+
+
+function keyDown(e) {
+    switch(e.keyCode) {
+        case 37:
+            left = true;
+            break;
+        case 38:
+            up = true;
+            break;
+        case 39:
+            right = true;
+            break;
+        case 40:
+            down = true;
+            break;  
+        case 32:
+            up = true;
+            break;
+    }   
+}       
+
+function mouseDown(e) {
+    e.preventDefault();
+    up=true;
+}
+function mouseUp(e) {
+    e.preventDefault();
+    up=false;
+}
+
+function keyUp(e) {
+    left = false;
+    right = false;
+    /*up = false;*/
+    down = false;
+    /*keySpace = false;*/
+}
+
+</script>
+
+</body>
+</html>
