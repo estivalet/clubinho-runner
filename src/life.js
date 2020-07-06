@@ -20,7 +20,7 @@ class Life {
     }
   
     add() {
-        if(this.lifes <= this.total) {
+        if(this.lifes < this.total) {
             this.lifes++;
         }
     }

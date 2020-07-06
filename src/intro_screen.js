@@ -40,7 +40,7 @@ class IntroScreen {
         });
         document.getElementById('container').appendChild(this.btnStart);
 
-        this.btnNextPlayer = createButton("NEXT");
+        this.btnNextPlayer = createButton("");
         this.btnNextPlayer.id = 'button-next-player';
         this.btnNextPlayer.addEventListener("click", function() {
             currentScreen.selectedPlayer++;
@@ -50,7 +50,7 @@ class IntroScreen {
         });
         document.getElementById('container').appendChild(this.btnNextPlayer);
 
-        this.btnPreviousPlayer = createButton("PREVIOUS");
+        this.btnPreviousPlayer = createButton("");
         this.btnPreviousPlayer.id = 'button-previous-player';
         this.btnPreviousPlayer.addEventListener("click", function() {
             currentScreen.selectedPlayer--;
@@ -73,6 +73,6 @@ class IntroScreen {
         context.font = "30px Arial";
         context.textAlign = "center";
         context.fillStyle = "#000";
-        context.fillText(this.players[this.selectedPlayer].description, CANVAS_WIDTH/2,CANVAS_HEIGHT/4);
+        context.fillText(this.players[this.selectedPlayer].description, CANVAS_WIDTH/2,CANVAS_HEIGHT/3.5);
     }
 }

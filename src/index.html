@@ -28,7 +28,7 @@ html, body {
   border: none;
   border-radius: .75rem;
   color: #fff;
-
+    
   margin-left: auto; 
   margin-right: auto; 
   top: 80%;
@@ -53,16 +53,22 @@ html, body {
 }
 
 #button-previous-player, #button-previous-stage {
-    left:0px;
+    left:160px;
     top: 150px;
+    width: 64px;
+    height: 64px;
+    background-image: url('../assets/images/left.png');
 }
 
 #button-next-player, #button-next-stage {
-    left:530px;
+    left:500px;
     top: 150px;
+    width: 64px;
+    height: 64px;
+    background-image: url('../assets/images/right.png');
 }
 
-#button-start:hover, #button-restart:hover, #button-next-player:hover, #button-previous-player:hover {
+#button-start:hover, #button-restart:hover, #button-next-player:hover, #button-previous-player:hover, #button-next-stage:hover, #button-previous-stage:hover {
   background-color: #ffc0c1;
   box-shadow: 2px 2px 0px 1px #b58a8a;
 }
@@ -74,6 +80,7 @@ html, body {
 <script src='animation.js'></script>
 <script src='player.js'></script>
 <script src='enemy.js'></script>
+<script src='bonus.js'></script>
 <script src='npc.js'></script>
 <script src='scene.js'></script>
 <script src='score.js'></script>
@@ -311,6 +318,8 @@ function init(){
             window.addEventListener("keyup", keyUp, false);
             window.addEventListener("mousedown", mouseDown, false);
             window.addEventListener("mouseup", mouseUp, false);
+            window.addEventListener("touchstart", touchStart, false);
+            window.addEventListener("touchend", touchEnd, false);
             canvas = document.getElementById('canvas');
             context = canvas.getContext('2d');
             window.requestAnimationFrame(gameLoop);  
@@ -374,7 +383,17 @@ function mouseUp(e) {
     up=false;
 }
 
+function touchStart(e) {
+    e.preventDefault();
+    up=true;
+}
+function touchEnd(e) {
+    e.preventDefault();
+    up=false;
+}
+
 function keyUp(e) {
+    e.preventDefault();
     left = false;
     right = false;
     /*up = false;*/

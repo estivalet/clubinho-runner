@@ -12,7 +12,7 @@ class StageScreen {
     }
 
     init() {
-        this.btnStart = createButton("START");
+        this.btnStart = createButton("PLAY!");
         this.btnStart.id = 'button-start';
         this.btnStart.addEventListener("click", function() {
             document.getElementById("button-start").remove();
@@ -34,7 +34,7 @@ class StageScreen {
         });
         document.getElementById('container').appendChild(this.btnStart);
 
-        this.btnNextStage = createButton("NEXT");
+        this.btnNextStage = createButton("");
         this.btnNextStage.id = 'button-next-stage';
         this.btnNextStage.addEventListener("click", function() {
             currentScreen.selectedStage++;
@@ -44,7 +44,7 @@ class StageScreen {
         });
         document.getElementById('container').appendChild(this.btnNextStage);
 
-        this.btnPreviousStage = createButton("PREVIOUS");
+        this.btnPreviousStage = createButton("");
         this.btnPreviousStage.id = 'button-previous-stage';
         this.btnPreviousStage.addEventListener("click", function() {
             currentScreen.selectedStage--;

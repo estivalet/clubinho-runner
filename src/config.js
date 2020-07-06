@@ -4,15 +4,17 @@ const CANVAS_HEIGHT = 480;
 let config = {
     "assets": {
         "sounds" : {
+            "coin": '../assets/sound/coin.wav',  
             "jump": '../assets/sound/jump.mp3',  
             "impact": '../assets/sound/impact_2.mp3',  
+            "life": '../assets/sound/life.wav',  
             "music": '../assets/sound/music.mp3',  
             "gameOver": '../assets/sound/game-over-sound-effect.mp3',
         },
         "sprites": {
             "lucas": {
                 "name": "lucas",
-                "description": "lucas",
+                "description": "Lucas the Cat",
                 "image": '../assets/sprites/lucas.png',
                 "x": 0,
                 "y": 30,
@@ -553,11 +555,46 @@ let config = {
                 },
                 "collisionRectAdj": [60, 40, -140, -50],
             },
+            "goldStar": {
+                "name": "goldStar",
+                "image": '../assets/items/gold_star_sprite.png',
+                "x": 200,
+                "y": 310,
+                "width": 60,
+                "height": 60,
+                "spriteWidth": 120,
+                "spriteHeight": 120,
+                "speed": 10,
+                "type": "bonus",
+                "frames": {
+                    "left": [0, 1, 2, 3, 4, 5],
+                },
+                "collisionRectAdj": [0, 0, 0, 0],
+            },
+            "heart": {
+                "name": "heart",
+                "image": '../assets/images/heart.png',
+                "x": 200,
+                "y": 290,
+                "width": 60,
+                "height": 40,
+                "spriteWidth": 200,
+                "spriteHeight": 167,
+                "speed": 20,
+                "type": "bonus",
+                "frames": {
+                    "left": [0],
+                },
+                "collisionRectAdj": [0, 0, 0, 0],
+            },
             
         },
         "images": {
             "heart": {
                 "image": '../assets/images/heart.png',
+            },
+            "coin": {
+                "image": '../assets/images/coin.png',
             },
             "border": {
                 "image": '../assets/images/border.png',
