@@ -66,8 +66,13 @@ class StageScreen {
         context.drawImage(images.telaInicial,0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
         context.drawImage(images.border,CANVAS_WIDTH/2-100,CANVAS_HEIGHT/2-100,200,200);
         context.drawImage(images[this.stages[this.selectedStage]],0,0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        context.font = "30px Arial";
+        /*
+        context.font = "60px Arial";
+        context.fillStyle = "white";
         context.textAlign = "center";
-        //context.fillText(this.stages[this.selectedStage].description, CANVAS_WIDTH/2,CANVAS_HEIGHT/4);
+        context.fillText(this.stages[this.selectedStage].description, CANVAS_WIDTH/2,CANVAS_HEIGHT/4);
+        context.fillStyle = "red";
+        context.fillText(this.stages[this.selectedStage].description, CANVAS_WIDTH/2-2,CANVAS_HEIGHT/4-2);
+        */
     }
 }

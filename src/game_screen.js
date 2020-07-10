@@ -97,13 +97,15 @@ class GameScreen {
                 this.goldStar.frameSet = s.frames.left;
                 this.goldStarTime = true;
             }
-            /*
+        }
+
+        if(parseInt(currentScore % 10) == 0) {
             for(var i=0; i < cenarios.length; i++) {
-                cenarios[i].increaseSpeed(1);
+                cenarios[i].increaseSpeed(.1);
             } 
             for(var i=0; i < config.stages[currentStage].levels[currentLevel].enemys.length; i++) {
-                enemys[config.stages[currentStage].levels[currentLevel].enemys[i].enemy].increaseSpeed(0.05);
-            } */
+                enemys[config.stages[currentStage].levels[currentLevel].enemys[i].enemy].increaseSpeed(0.5);
+            }
         }
         
         if(parseInt(currentScore % 150) == 0) {
