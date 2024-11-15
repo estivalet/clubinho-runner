@@ -1,6 +1,6 @@
 # 🏃‍♂️💨 Clubinho Runner
 
-Welcome to **Infinite Run Game**, a thrilling endless runner where you dodge obstacles, collect coins, and test your reflexes as the speed intensifies! 🎮✨  
+Welcome to **Clubinho Runner**, a thrilling endless runner where you dodge obstacles, collect coins, and test your reflexes as the speed intensifies! 🎮✨  
 
 ![Gameplay Screenshot](game.jpg)
 
